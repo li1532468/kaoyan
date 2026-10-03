@@ -1,0 +1,1387 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>考研助手 - 一战成硕</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  
+  :root {
+    --primary: #4f46e5;
+    --primary-light: #6366f1;
+    --primary-dark: #3730a3;
+    --secondary: #f59e0b;
+    --success: #10b981;
+    --danger: #ef4444;
+    --bg: #f8fafc;
+    --card: #ffffff;
+    --text: #1e293b;
+    --text-light: #64748b;
+    --border: #e2e8f0;
+    --shadow: 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+  }
+  
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+  
+  /* 导航栏 */
+  .navbar {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    color: white;
+    padding: 0 2rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: var(--shadow-lg);
+  }
+  
+  .nav-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+  }
+  
+  .logo {
+    font-size: 1.4rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .logo-icon { font-size: 1.6rem; }
+  
+  .nav-menu {
+    display: flex;
+    gap: 0.25rem;
+    list-style: none;
+  }
+  
+  .nav-item {
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.2s;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  
+  .nav-item:hover { background: rgba(255,255,255,0.15); }
+  .nav-item.active { background: rgba(255,255,255,0.25); font-weight: 600; }
+  
+  /* 主内容区 */
+  .main-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+  
+  .page { display: none; animation: fadeIn 0.3s ease; }
+  .page.active { display: block; }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  /* 卡片通用样式 */
+  .card {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+    margin-bottom: 1.5rem;
+  }
+  
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border);
+  }
+  
+  .card-title {
+    font-size: 1.15rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  /* 按钮 */
+  .btn {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  
+  .btn-primary { background: var(--primary); color: white; }
+  .btn-primary:hover { background: var(--primary-dark); }
+  .btn-secondary { background: var(--secondary); color: white; }
+  .btn-secondary:hover { background: #d97706; }
+  .btn-success { background: var(--success); color: white; }
+  .btn-success:hover { background: #059669; }
+  .btn-danger { background: var(--danger); color: white; }
+  .btn-danger:hover { background: #dc2626; }
+  .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text); }
+  .btn-outline:hover { background: var(--bg); }
+  .btn-sm { padding: 0.3rem 0.7rem; font-size: 0.8rem; }
+  
+  /* 仪表盘 */
+  .dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .stat-card {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 1.25rem;
+    box-shadow: var(--shadow);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  
+  .stat-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+  }
+  
+  .stat-icon.purple { background: #ede9fe; color: #7c3aed; }
+  .stat-icon.orange { background: #ffedd5; color: #ea580c; }
+  .stat-icon.green { background: #d1fae5; color: #059669; }
+  .stat-icon.blue { background: #dbeafe; color: #2563eb; }
+  
+  .stat-info h3 { font-size: 0.9rem; color: var(--text-light); font-weight: 500; }
+  .stat-info .stat-value { font-size: 1.5rem; font-weight: 700; }
+  
+  .countdown-card {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    color: white;
+    border-radius: 12px;
+    padding: 2rem;
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+  
+  .countdown-label { font-size: 1rem; opacity: 0.9; margin-bottom: 0.5rem; }
+  .countdown-days { font-size: 3rem; font-weight: 700; }
+  .countdown-days small { font-size: 1rem; font-weight: 400; opacity: 0.8; }
+  
+  /* 表单 */
+  .form-group {
+    margin-bottom: 1rem;
+  }
+  
+  .form-group label {
+    display: block;
+    margin-bottom: 0.4rem;
+    font-weight: 500;
+    font-size: 0.9rem;
+    color: var(--text);
+  }
+  
+  .form-group input,
+  .form-group textarea,
+  .form-group select {
+    width: 100%;
+    padding: 0.6rem 0.8rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-family: inherit;
+    transition: border-color 0.2s;
+  }
+  
+  .form-group input:focus,
+  .form-group textarea:focus,
+  .form-group select:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+  }
+  
+  .form-group textarea { resize: vertical; min-height: 100px; }
+  
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+  
+  /* 模态框 */
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.5);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 1rem;
+  }
+  
+  .modal-overlay.active { display: flex; }
+  
+  .modal {
+    background: var(--card);
+    border-radius: 12px;
+    width: 100%;
+    max-width: 500px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: var(--shadow-lg);
+    animation: modalIn 0.2s ease;
+  }
+  
+  @keyframes modalIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+  }
+  
+  .modal-header {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .modal-title { font-size: 1.1rem; font-weight: 600; }
+  
+  .modal-close {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: var(--text-light);
+    line-height: 1;
+  }
+  
+  .modal-body { padding: 1.5rem; }
+  .modal-footer {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+  }
+  
+  /* 目标院校 */
+  .school-info {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 1.5rem;
+  }
+  
+  .school-badge {
+    background: linear-gradient(135deg, var(--primary-light), var(--primary));
+    color: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 200px;
+  }
+  
+  .school-badge .icon { font-size: 3rem; margin-bottom: 0.5rem; }
+  .school-badge h2 { font-size: 1.3rem; margin-bottom: 0.3rem; }
+  .school-badge p { opacity: 0.9; font-size: 0.9rem; }
+  
+  .detail-item {
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .detail-item:last-child { border-bottom: none; }
+  .detail-label { color: var(--text-light); font-size: 0.9rem; }
+  .detail-value { font-weight: 500; }
+  
+  .resource-list {
+    list-style: none;
+  }
+  
+  .resource-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem;
+    background: var(--bg);
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+  }
+  
+  .resource-info { display: flex; align-items: center; gap: 0.75rem; }
+  .resource-icon { font-size: 1.25rem; }
+  .resource-name { font-weight: 500; }
+  .resource-type { font-size: 0.8rem; color: var(--text-light); }
+  
+  .resource-actions { display: flex; gap: 0.25rem; }
+  
+  /* 日记 */
+  .diary-item {
+    padding: 1rem;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin-bottom: 1rem;
+    transition: all 0.2s;
+  }
+  
+  .diary-item:hover { box-shadow: var(--shadow); border-color: var(--primary-light); }
+  
+  .diary-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+  }
+  
+  .diary-date {
+    font-weight: 600;
+    color: var(--primary);
+    font-size: 0.95rem;
+  }
+  
+  .diary-mood { font-size: 1.2rem; }
+  
+  .diary-title {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    font-size: 1rem;
+  }
+  
+  .diary-content {
+    color: var(--text-light);
+    font-size: 0.9rem;
+    white-space: pre-wrap;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  .diary-content.expanded {
+    -webkit-line-clamp: unset;
+    display: block;
+  }
+  
+  .diary-actions {
+    margin-top: 0.75rem;
+    display: flex;
+    gap: 0.5rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--border);
+  }
+  
+  .empty-state {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--text-light);
+  }
+  
+  .empty-state .icon { font-size: 3rem; margin-bottom: 0.5rem; }
+  .empty-state p { margin-bottom: 1rem; }
+  
+  /* 复习打卡 */
+  .subjects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .subject-card {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 1.25rem;
+    box-shadow: var(--shadow);
+    border-left: 4px solid var(--primary);
+  }
+  
+  .subject-card.math { border-left-color: #f59e0b; }
+  .subject-card.english { border-left-color: #3b82f6; }
+  .subject-card.politics { border-left-color: #ef4444; }
+  .subject-card.major { border-left-color: #10b981; }
+  
+  .subject-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+  }
+  
+  .subject-name { font-weight: 600; font-size: 1rem; }
+  .subject-progress-text { font-size: 0.85rem; color: var(--text-light); }
+  
+  .progress-bar {
+    height: 8px;
+    background: var(--bg);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 0.75rem;
+  }
+  
+  .progress-fill {
+    height: 100%;
+    background: var(--primary);
+    border-radius: 4px;
+    transition: width 0.3s;
+  }
+  
+  .subject-card.math .progress-fill { background: #f59e0b; }
+  .subject-card.english .progress-fill { background: #3b82f6; }
+  .subject-card.politics .progress-fill { background: #ef4444; }
+  .subject-card.major .progress-fill { background: #10b981; }
+  
+  .subject-goal {
+    font-size: 0.85rem;
+    color: var(--text-light);
+    margin-bottom: 0.75rem;
+  }
+  
+  /* 打卡日历 */
+  .calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+  
+  .calendar-nav {
+    display: flex;
+    gap: 0.5rem;
+  }
+  
+  .calendar-month { font-size: 1.1rem; font-weight: 600; }
+  
+  .calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0.3rem;
+  }
+  
+  .calendar-day-name {
+    text-align: center;
+    font-size: 0.8rem;
+    color: var(--text-light);
+    padding: 0.3rem;
+    font-weight: 500;
+  }
+  
+  .calendar-day {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: var(--bg);
+    position: relative;
+  }
+  
+  .calendar-day:hover { background: var(--border); }
+  .calendar-day.other-month { color: #cbd5e1; background: transparent; }
+  .calendar-day.today { border: 2px solid var(--primary); font-weight: 600; }
+  
+  .calendar-day.checked {
+    background: var(--success);
+    color: white;
+    font-weight: 600;
+  }
+  
+  .calendar-day.checked:hover { background: #059669; }
+  
+  /* 标签 */
+  .tag {
+    display: inline-block;
+    padding: 0.15rem 0.6rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+  }
+  
+  .tag-purple { background: #ede9fe; color: #7c3aed; }
+  .tag-orange { background: #ffedd5; color: #ea580c; }
+  .tag-green { background: #d1fae5; color: #059669; }
+  .tag-blue { background: #dbeafe; color: #2563eb; }
+  .tag-red { background: #fee2e2; color: #dc2626; }
+  
+  /* 响应式 */
+  @media (max-width: 768px) {
+    .nav-container { padding: 0 1rem; height: auto; flex-direction: column; padding: 0.75rem 0; }
+    .nav-menu { margin-top: 0.5rem; flex-wrap: wrap; justify-content: center; }
+    .main-container { padding: 1rem; }
+    .form-row { grid-template-columns: 1fr; }
+    .school-info { grid-template-columns: 1fr; }
+    .countdown-days { font-size: 2rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- 导航栏 -->
+<nav class="navbar">
+  <div class="nav-container">
+    <div class="logo">
+      <span class="logo-icon">📚</span>
+      <span>考研助手</span>
+    </div>
+    <ul class="nav-menu">
+      <li class="nav-item active" data-page="dashboard">🏠 首页</li>
+      <li class="nav-item" data-page="school">🎯 目标院校</li>
+      <li class="nav-item" data-page="diary">📝 考研日记</li>
+      <li class="nav-item" data-page="checkin">✅ 复习打卡</li>
+    </ul>
+  </div>
+</nav>
+
+<div class="main-container">
+
+  <!-- 首页仪表盘 -->
+  <div class="page active" id="page-dashboard">
+    <div class="countdown-card">
+      <div class="countdown-label">距离 2027 年考研还有</div>
+      <div class="countdown-days"><span id="countdown-days">--</span> <small>天</small></div>
+      <div style="margin-top: 0.5rem; opacity: 0.85; font-size: 0.9rem;">加油！坚持就是胜利 💪</div>
+    </div>
+    
+    <div class="dashboard-grid">
+      <div class="stat-card">
+        <div class="stat-icon purple">🎯</div>
+        <div class="stat-info">
+          <h3>目标院校</h3>
+          <div class="stat-value" id="stat-school">未设置</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon green">✅</div>
+        <div class="stat-info">
+          <h3>连续打卡</h3>
+          <div class="stat-value"><span id="stat-streak">0</span> 天</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon orange">📝</div>
+        <div class="stat-info">
+          <h3>日记总数</h3>
+          <div class="stat-value"><span id="stat-diary">0</span> 篇</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon blue">📊</div>
+        <div class="stat-info">
+          <h3>总打卡天数</h3>
+          <div class="stat-value"><span id="stat-total">0</span> 天</div>
+        </div>
+      </div>
+    </div>
+    
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">📖 今日复习</div>
+        </div>
+        <div id="today-subjects">
+          <p style="color: var(--text-light); font-size: 0.9rem;">去「复习打卡」页面开始今天的学习吧！</p>
+        </div>
+      </div>
+      
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">📔 最近日记</div>
+        </div>
+        <div id="recent-diaries">
+          <p style="color: var(--text-light); font-size: 0.9rem;">还没有写日记，去记录一下吧～</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 目标院校 -->
+  <div class="page" id="page-school">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">🎯 我的目标院校</div>
+        <button class="btn btn-primary btn-sm" onclick="openSchoolModal()">✏️ 编辑信息</button>
+      </div>
+      <div class="school-info">
+        <div class="school-badge" id="school-badge">
+          <div class="icon">🏫</div>
+          <h2 id="badge-school-name">未设置目标院校</h2>
+          <p id="badge-school-major">点击右上角编辑按钮设置</p>
+        </div>
+        <div>
+          <div class="detail-item">
+            <span class="detail-label">目标院校</span>
+            <span class="detail-value" id="detail-school">--</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">目标专业</span>
+            <span class="detail-value" id="detail-major">--</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">研究方向</span>
+            <span class="detail-value" id="detail-direction">--</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">目标总分</span>
+            <span class="detail-value" id="detail-score">--</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">考试科目</span>
+            <span class="detail-value" id="detail-subjects" style="text-align: right;">--</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">📚 复习资料</div>
+        <button class="btn btn-primary btn-sm" onclick="openResourceModal()">➕ 添加资料</button>
+      </div>
+      <ul class="resource-list" id="resource-list">
+        <div class="empty-state">
+          <div class="icon">📂</div>
+          <p>还没有添加复习资料</p>
+        </div>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 考研日记 -->
+  <div class="page" id="page-diary">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">📝 考研日记</div>
+        <button class="btn btn-primary" onclick="openDiaryModal()">➕ 写日记</button>
+      </div>
+      <div id="diary-list">
+        <div class="empty-state">
+          <div class="icon">📔</div>
+          <p>还没有日记，记录下你的考研历程吧！</p>
+          <button class="btn btn-primary" onclick="openDiaryModal()">写第一篇日记</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 复习打卡 -->
+  <div class="page" id="page-checkin">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">✅ 今日打卡</div>
+        <div style="display: flex; gap: 0.5rem;">
+          <span class="tag tag-green" id="today-status">今日未打卡</span>
+          <button class="btn btn-success btn-sm" onclick="checkInToday()" id="checkin-btn">打卡</button>
+        </div>
+      </div>
+      <div class="subjects-grid" id="subjects-grid">
+        <!-- 科目卡片动态生成 -->
+      </div>
+    </div>
+    
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">📅 打卡日历</div>
+        <div class="calendar-nav">
+          <button class="btn btn-outline btn-sm" onclick="prevMonth()">◀ 上月</button>
+          <span class="calendar-month" id="calendar-month">--</span>
+          <button class="btn btn-outline btn-sm" onclick="nextMonth()">下月 ▶</button>
+        </div>
+      </div>
+      <div class="calendar-grid" id="calendar-grid">
+        <!-- 日历动态生成 -->
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- 编辑院校信息模态框 -->
+<div class="modal-overlay" id="school-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">🎯 编辑目标院校</div>
+      <button class="modal-close" onclick="closeModal('school-modal')">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>目标院校</label>
+        <input type="text" id="input-school" placeholder="如：清华大学">
+      </div>
+      <div class="form-group">
+        <label>目标专业</label>
+        <input type="text" id="input-major" placeholder="如：计算机科学与技术">
+      </div>
+      <div class="form-group">
+        <label>研究方向</label>
+        <input type="text" id="input-direction" placeholder="如：人工智能">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>目标总分</label>
+          <input type="number" id="input-score" placeholder="如：400">
+        </div>
+        <div class="form-group">
+          <label>考研年份</label>
+          <input type="number" id="input-year" placeholder="如：2027">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>考试科目（用逗号分隔）</label>
+        <input type="text" id="input-subjects" placeholder="如：政治,英语一,数学一,专业课">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('school-modal')">取消</button>
+      <button class="btn btn-primary" onclick="saveSchool()">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- 添加资料模态框 -->
+<div class="modal-overlay" id="resource-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">📚 添加复习资料</div>
+      <button class="modal-close" onclick="closeModal('resource-modal')">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>资料名称</label>
+        <input type="text" id="res-name" placeholder="如：张宇高数18讲">
+      </div>
+      <div class="form-group">
+        <label>资料类型</label>
+        <select id="res-type">
+          <option value="教材">📖 教材</option>
+          <option value="习题集">📝 习题集</option>
+          <option value="真题">📄 真题</option>
+          <option value="视频课">🎬 视频课</option>
+          <option value="笔记">📋 笔记</option>
+          <option value="其他">📦 其他</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>备注/链接</label>
+        <textarea id="res-note" placeholder="资料链接、使用心得等"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('resource-modal')">取消</button>
+      <button class="btn btn-primary" onclick="saveResource()">添加</button>
+    </div>
+  </div>
+</div>
+
+<!-- 写日记模态框 -->
+<div class="modal-overlay" id="diary-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">📝 写日记</div>
+      <button class="modal-close" onclick="closeModal('diary-modal')">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>日期</label>
+        <input type="date" id="diary-date">
+      </div>
+      <div class="form-group">
+        <label>今日心情</label>
+        <select id="diary-mood">
+          <option value="😊">😊 开心</option>
+          <option value="😌">😌 平静</option>
+          <option value="💪">💪 奋斗</option>
+          <option value="😴">😴 疲惫</option>
+          <option value="😢">😢 沮丧</option>
+          <option value="🔥">🔥 热血</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>标题</label>
+        <input type="text" id="diary-title" placeholder="给今天起个标题吧">
+      </div>
+      <div class="form-group">
+        <label>内容</label>
+        <textarea id="diary-content" rows="6" placeholder="记录今天的学习、感悟、收获..."></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('diary-modal')">取消</button>
+      <button class="btn btn-primary" onclick="saveDiary()">保存日记</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============ 数据存储 ============
+const STORAGE_KEY = 'kaoyan-helper-data';
+
+let appData = {
+  school: { name: '', major: '', direction: '', score: '', year: 2027, subjects: '' },
+  resources: [],
+  diaries: [],
+  checkIns: [], // 打卡日期数组 ['2024-01-01', ...]
+  subjects: [
+    { id: 'math', name: '数学', type: 'math', goal: '130分', progress: 0 },
+    { id: 'english', name: '英语', type: 'english', goal: '70分', progress: 0 },
+    { id: 'politics', name: '政治', type: 'politics', goal: '70分', progress: 0 },
+    { id: 'major', name: '专业课', type: 'major', goal: '130分', progress: 0 }
+  ]
+};
+
+function loadData() {
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if (saved) {
+    try {
+      appData = { ...appData, ...JSON.parse(saved) };
+    } catch (e) {
+      console.error('数据加载失败', e);
+    }
+  }
+}
+
+function saveData() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
+}
+
+// ============ 页面导航 ============
+document.querySelectorAll('.nav-item').forEach(item => {
+  item.addEventListener('click', () => {
+    const page = item.dataset.page;
+    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    item.classList.add('active');
+    document.getElementById('page-' + page).classList.add('active');
+    
+    if (page === 'checkin') renderCalendar();
+  });
+});
+
+// ============ 模态框 ============
+function openModal(id) {
+  document.getElementById(id).classList.add('active');
+}
+
+function closeModal(id) {
+  document.getElementById(id).classList.remove('active');
+}
+
+// 点击遮罩关闭
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) overlay.classList.remove('active');
+  });
+});
+
+// ============ 倒计时 ============
+function updateCountdown() {
+  const year = appData.school.year || 2027;
+  // 考研通常在12月倒数第二个周末，这里简化为12月21日
+  const examDate = new Date(year, 11, 21);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  
+  const diff = Math.ceil((examDate - today) / (1000 * 60 * 60 * 24));
+  document.getElementById('countdown-days').textContent = diff > 0 ? diff : 0;
+}
+
+// ============ 目标院校 ============
+function openSchoolModal() {
+  document.getElementById('input-school').value = appData.school.name;
+  document.getElementById('input-major').value = appData.school.major;
+  document.getElementById('input-direction').value = appData.school.direction;
+  document.getElementById('input-score').value = appData.school.score;
+  document.getElementById('input-year').value = appData.school.year || 2027;
+  document.getElementById('input-subjects').value = appData.school.subjects;
+  openModal('school-modal');
+}
+
+function saveSchool() {
+  appData.school.name = document.getElementById('input-school').value;
+  appData.school.major = document.getElementById('input-major').value;
+  appData.school.direction = document.getElementById('input-direction').value;
+  appData.school.score = document.getElementById('input-score').value;
+  appData.school.year = parseInt(document.getElementById('input-year').value) || 2027;
+  appData.school.subjects = document.getElementById('input-subjects').value;
+  
+  saveData();
+  renderSchool();
+  updateDashboard();
+  closeModal('school-modal');
+}
+
+function renderSchool() {
+  const s = appData.school;
+  document.getElementById('badge-school-name').textContent = s.name || '未设置目标院校';
+  document.getElementById('badge-school-major').textContent = s.major || '点击右上角编辑按钮设置';
+  document.getElementById('detail-school').textContent = s.name || '--';
+  document.getElementById('detail-major').textContent = s.major || '--';
+  document.getElementById('detail-direction').textContent = s.direction || '--';
+  document.getElementById('detail-score').textContent = s.score ? s.score + ' 分' : '--';
+  document.getElementById('detail-subjects').textContent = s.subjects || '--';
+  
+  // 更新科目
+  if (s.subjects) {
+    const subs = s.subjects.split(/[,，]/).map(x => x.trim()).filter(x => x);
+    if (subs.length >= 4) {
+      appData.subjects = [
+        { id: 'politics', name: subs[0] || '政治', type: 'politics', goal: '70分', progress: appData.subjects.find(x=>x.id==='politics')?.progress || 0 },
+        { id: 'english', name: subs[1] || '英语', type: 'english', goal: '70分', progress: appData.subjects.find(x=>x.id==='english')?.progress || 0 },
+        { id: 'math', name: subs[2] || '数学', type: 'math', goal: '130分', progress: appData.subjects.find(x=>x.id==='math')?.progress || 0 },
+        { id: 'major', name: subs[3] || '专业课', type: 'major', goal: '130分', progress: appData.subjects.find(x=>x.id==='major')?.progress || 0 }
+      ];
+    }
+  }
+  
+  renderSubjects();
+}
+
+// ============ 复习资料 ============
+function openResourceModal() {
+  document.getElementById('res-name').value = '';
+  document.getElementById('res-type').value = '教材';
+  document.getElementById('res-note').value = '';
+  openModal('resource-modal');
+}
+
+function saveResource() {
+  const name = document.getElementById('res-name').value.trim();
+  if (!name) { alert('请输入资料名称'); return; }
+  
+  appData.resources.push({
+    id: Date.now(),
+    name,
+    type: document.getElementById('res-type').value,
+    note: document.getElementById('res-note').value
+  });
+  
+  saveData();
+  renderResources();
+  closeModal('resource-modal');
+}
+
+function deleteResource(id) {
+  if (!confirm('确定删除这个资料吗？')) return;
+  appData.resources = appData.resources.filter(r => r.id !== id);
+  saveData();
+  renderResources();
+}
+
+function renderResources() {
+  const list = document.getElementById('resource-list');
+  if (appData.resources.length === 0) {
+    list.innerHTML = `
+      <div class="empty-state">
+        <div class="icon">📂</div>
+        <p>还没有添加复习资料</p>
+      </div>`;
+    return;
+  }
+  
+  const typeIcons = {
+    '教材': '📖', '习题集': '📝', '真题': '📄',
+    '视频课': '🎬', '笔记': '📋', '其他': '📦'
+  };
+  
+  list.innerHTML = appData.resources.map(r => `
+    <li class="resource-item">
+      <div class="resource-info">
+        <span class="resource-icon">${typeIcons[r.type] || '📦'}</span>
+        <div>
+          <div class="resource-name">${r.name}</div>
+          <div class="resource-type">${r.type}${r.note ? ' · ' + r.note.substring(0, 30) : ''}</div>
+        </div>
+      </div>
+      <div class="resource-actions">
+        <button class="btn btn-danger btn-sm" onclick="deleteResource(${r.id})">删除</button>
+      </div>
+    </li>
+  `).join('');
+}
+
+// ============ 考研日记 ============
+let editingDiaryId = null;
+
+function openDiaryModal(id = null) {
+  editingDiaryId = id;
+  const today = new Date().toISOString().split('T')[0];
+  
+  if (id) {
+    const diary = appData.diaries.find(d => d.id === id);
+    if (diary) {
+      document.getElementById('diary-date').value = diary.date;
+      document.getElementById('diary-mood').value = diary.mood;
+      document.getElementById('diary-title').value = diary.title;
+      document.getElementById('diary-content').value = diary.content;
+    }
+  } else {
+    document.getElementById('diary-date').value = today;
+    document.getElementById('diary-mood').value = '😊';
+    document.getElementById('diary-title').value = '';
+    document.getElementById('diary-content').value = '';
+  }
+  
+  openModal('diary-modal');
+}
+
+function saveDiary() {
+  const date = document.getElementById('diary-date').value;
+  const mood = document.getElementById('diary-mood').value;
+  const title = document.getElementById('diary-title').value.trim();
+  const content = document.getElementById('diary-content').value.trim();
+  
+  if (!date || !content) { alert('请填写日期和内容'); return; }
+  
+  if (editingDiaryId) {
+    const diary = appData.diaries.find(d => d.id === editingDiaryId);
+    if (diary) {
+      diary.date = date;
+      diary.mood = mood;
+      diary.title = title;
+      diary.content = content;
+    }
+  } else {
+    appData.diaries.unshift({
+      id: Date.now(),
+      date,
+      mood,
+      title: title || '无标题',
+      content
+    });
+  }
+  
+  appData.diaries.sort((a, b) => new Date(b.date) - new Date(a.date));
+  saveData();
+  renderDiaries();
+  updateDashboard();
+  closeModal('diary-modal');
+}
+
+function deleteDiary(id) {
+  if (!confirm('确定删除这篇日记吗？')) return;
+  appData.diaries = appData.diaries.filter(d => d.id !== id);
+  saveData();
+  renderDiaries();
+  updateDashboard();
+}
+
+function toggleDiaryContent(btn) {
+  const content = btn.previousElementSibling;
+  content.classList.toggle('expanded');
+  btn.textContent = content.classList.contains('expanded') ? '收起' : '展开';
+}
+
+function renderDiaries() {
+  const list = document.getElementById('diary-list');
+  if (appData.diaries.length === 0) {
+    list.innerHTML = `
+      <div class="empty-state">
+        <div class="icon">📔</div>
+        <p>还没有日记，记录下你的考研历程吧！</p>
+        <button class="btn btn-primary" onclick="openDiaryModal()">写第一篇日记</button>
+      </div>`;
+    return;
+  }
+  
+  list.innerHTML = appData.diaries.map(d => `
+    <div class="diary-item">
+      <div class="diary-header">
+        <span class="diary-date">${formatDate(d.date)}</span>
+        <span class="diary-mood">${d.mood}</span>
+      </div>
+      <div class="diary-title">${d.title}</div>
+      <div class="diary-content">${escapeHtml(d.content)}</div>
+      <div class="diary-actions">
+        <button class="btn btn-outline btn-sm" onclick="toggleDiaryContent(this)">展开</button>
+        <button class="btn btn-outline btn-sm" onclick="openDiaryModal(${d.id})">编辑</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteDiary(${d.id})">删除</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ============ 复习打卡 ============
+function renderSubjects() {
+  const grid = document.getElementById('subjects-grid');
+  grid.innerHTML = appData.subjects.map(s => `
+    <div class="subject-card ${s.type}">
+      <div class="subject-header">
+        <span class="subject-name">${s.name}</span>
+        <span class="subject-progress-text">${s.progress}%</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" style="width: ${s.progress}%"></div>
+      </div>
+      <div class="subject-goal">目标：${s.goal}</div>
+      <div style="display: flex; gap: 0.5rem;">
+        <button class="btn btn-outline btn-sm" style="flex:1" onclick="updateProgress('${s.id}', -5)">-5%</button>
+        <button class="btn btn-outline btn-sm" style="flex:1" onclick="updateProgress('${s.id}', 5)">+5%</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function updateProgress(id, delta) {
+  const subj = appData.subjects.find(s => s.id === id);
+  if (subj) {
+    subj.progress = Math.max(0, Math.min(100, subj.progress + delta));
+    saveData();
+    renderSubjects();
+  }
+}
+
+function getTodayStr() {
+  return new Date().toISOString().split('T')[0];
+}
+
+function isCheckedToday() {
+  return appData.checkIns.includes(getTodayStr());
+}
+
+function checkInToday() {
+  const today = getTodayStr();
+  if (isCheckedToday()) {
+    if (confirm('今天已经打过卡了，要取消打卡吗？')) {
+      appData.checkIns = appData.checkIns.filter(d => d !== today);
+      saveData();
+      updateCheckInStatus();
+      renderCalendar();
+      updateDashboard();
+    }
+  } else {
+    appData.checkIns.push(today);
+    saveData();
+    updateCheckInStatus();
+    renderCalendar();
+    updateDashboard();
+  }
+}
+
+function updateCheckInStatus() {
+  const statusEl = document.getElementById('today-status');
+  const btnEl = document.getElementById('checkin-btn');
+  if (isCheckedToday()) {
+    statusEl.textContent = '✓ 今日已打卡';
+    statusEl.className = 'tag tag-green';
+    btnEl.textContent = '取消打卡';
+    btnEl.className = 'btn btn-outline btn-sm';
+  } else {
+    statusEl.textContent = '今日未打卡';
+    statusEl.className = 'tag tag-orange';
+    btnEl.textContent = '打卡';
+    btnEl.className = 'btn btn-success btn-sm';
+  }
+}
+
+function calculateStreak() {
+  if (appData.checkIns.length === 0) return 0;
+  
+  const sorted = [...appData.checkIns].sort().reverse();
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  
+  let streak = 0;
+  let checkDate = new Date(today);
+  
+  // 如果今天没打卡，从昨天开始算
+  const todayStr = getTodayStr();
+  if (!sorted.includes(todayStr)) {
+    checkDate.setDate(checkDate.getDate() - 1);
+  }
+  
+  for (let i = 0; i < 365; i++) {
+    const dateStr = checkDate.toISOString().split('T')[0];
+    if (sorted.includes(dateStr)) {
+      streak++;
+      checkDate.setDate(checkDate.getDate() - 1);
+    } else {
+      break;
+    }
+  }
+  
+  return streak;
+}
+
+// ============ 日历 ============
+let calendarDate = new Date();
+
+function renderCalendar() {
+  const year = calendarDate.getFullYear();
+  const month = calendarDate.getMonth();
+  
+  document.getElementById('calendar-month').textContent = `${year}年${month + 1}月`;
+  
+  const firstDay = new Date(year, month, 1);
+  const lastDay = new Date(year, month + 1, 0);
+  const startDay = firstDay.getDay(); // 0=周日
+  const daysInMonth = lastDay.getDate();
+  
+  const dayNames = ['日', '一', '二', '三', '四', '五', '六'];
+  let html = dayNames.map(d => `<div class="calendar-day-name">${d}</div>`).join('');
+  
+  // 上个月的天数
+  const prevMonthLastDay = new Date(year, month, 0).getDate();
+  for (let i = startDay - 1; i >= 0; i--) {
+    html += `<div class="calendar-day other-month">${prevMonthLastDay - i}</div>`;
+  }
+  
+  const todayStr = getTodayStr();
+  for (let day = 1; day <= daysInMonth; day++) {
+    const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+    let classes = 'calendar-day';
+    if (dateStr === todayStr) classes += ' today';
+    if (appData.checkIns.includes(dateStr)) classes += ' checked';
+    
+    html += `<div class="${classes}" onclick="toggleDayCheckIn('${dateStr}')">${day}</div>`;
+  }
+  
+  // 下个月的天数填充
+  const totalCells = startDay + daysInMonth;
+  const remaining = (7 - (totalCells % 7)) % 7;
+  for (let day = 1; day <= remaining; day++) {
+    html += `<div class="calendar-day other-month">${day}</div>`;
+  }
+  
+  document.getElementById('calendar-grid').innerHTML = html;
+}
+
+function toggleDayCheckIn(dateStr) {
+  if (appData.checkIns.includes(dateStr)) {
+    if (confirm(`取消 ${dateStr} 的打卡？`)) {
+      appData.checkIns = appData.checkIns.filter(d => d !== dateStr);
+    }
+  } else {
+    appData.checkIns.push(dateStr);
+  }
+  saveData();
+  renderCalendar();
+  updateCheckInStatus();
+  updateDashboard();
+}
+
+function prevMonth() {
+  calendarDate.setMonth(calendarDate.getMonth() - 1);
+  renderCalendar();
+}
+
+function nextMonth() {
+  calendarDate.setMonth(calendarDate.getMonth() + 1);
+  renderCalendar();
+}
+
+// ============ 仪表盘更新 ============
+function updateDashboard() {
+  // 目标院校
+  document.getElementById('stat-school').textContent = appData.school.name || '未设置';
+  
+  // 连续打卡
+  document.getElementById('stat-streak').textContent = calculateStreak();
+  
+  // 日记数
+  document.getElementById('stat-diary').textContent = appData.diaries.length;
+  
+  // 总打卡
+  document.getElementById('stat-total').textContent = appData.checkIns.length;
+  
+  // 今日复习
+  const todaySubj = document.getElementById('today-subjects');
+  if (appData.subjects.length > 0) {
+    todaySubj.innerHTML = appData.subjects.map(s => `
+      <div style="display: flex; justify-content: space-between; padding: 0.4rem 0; border-bottom: 1px solid var(--border);">
+        <span>${s.name}</span>
+        <span style="color: var(--text-light);">${s.progress}%</span>
+      </div>
+    `).join('');
+  }
+  
+  // 最近日记
+  const recent = document.getElementById('recent-diaries');
+  if (appData.diaries.length > 0) {
+    const top3 = appData.diaries.slice(0, 3);
+    recent.innerHTML = top3.map(d => `
+      <div style="padding: 0.5rem 0; border-bottom: 1px solid var(--border);">
+        <div style="display: flex; justify-content: space-between;">
+          <span style="font-weight: 500; font-size: 0.9rem;">${d.title}</span>
+          <span style="font-size: 0.8rem; color: var(--text-light);">${d.mood}</span>
+        </div>
+        <div style="font-size: 0.8rem; color: var(--text-light); margin-top: 0.2rem;">${formatDate(d.date)}</div>
+      </div>
+    `).join('');
+  } else {
+    recent.innerHTML = '<p style="color: var(--text-light); font-size: 0.9rem;">还没有写日记，去记录一下吧～</p>';
+  }
+}
+
+// ============ 工具函数 ============
+function formatDate(dateStr) {
+  const date = new Date(dateStr);
+  const year = date.getFullYear();
+  const month = date.getMonth() + 1;
+  const day = date.getDate();
+  const weekDays = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
+  return `${year}年${month}月${day}日 ${weekDays[date.getDay()]}`;
+}
+
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+// ============ 初始化 ============
+function init() {
+  loadData();
+  updateCountdown();
+  renderSchool();
+  renderResources();
+  renderDiaries();
+  renderSubjects();
+  updateCheckInStatus();
+  updateDashboard();
+}
+
+init();
+</script>
+</body>
+</html>
