@@ -579,7 +579,7 @@
   <!-- 首页仪表盘 -->
   <div class="page active" id="page-dashboard">
     <div class="countdown-card">
-      <div class="countdown-label">距离 2027 年考研还有</div>
+      <div class="countdown-label">距离 2028 年考研还有</div>
       <div class="countdown-days"><span id="countdown-days">--</span> <small>天</small></div>
       <div style="margin-top: 0.5rem; opacity: 0.85; font-size: 0.9rem;">加油！坚持就是胜利 💪</div>
     </div>
@@ -764,7 +764,7 @@
         </div>
         <div class="form-group">
           <label>考研年份</label>
-          <input type="number" id="input-year" placeholder="如：2027">
+          <input type="number" id="input-year" placeholder="如：2028">
         </div>
       </div>
       <div class="form-group">
@@ -858,7 +858,7 @@
 const STORAGE_KEY = 'kaoyan-helper-data';
 
 let appData = {
-  school: { name: '', major: '', direction: '', score: '', year: 2027, subjects: '' },
+  school: { name: '', major: '', direction: '', score: '', year: 2028, subjects: '' },
   resources: [],
   diaries: [],
   checkIns: [], // 打卡日期数组 ['2024-01-01', ...]
@@ -916,7 +916,7 @@ document.querySelectorAll('.modal-overlay').forEach(overlay => {
 
 // ============ 倒计时 ============
 function updateCountdown() {
-  const year = appData.school.year || 2027;
+  const year = appData.school.year || 2028;
   // 考研通常在12月倒数第二个周末，这里简化为12月21日
   const examDate = new Date(year, 11, 21);
   const today = new Date();
@@ -932,7 +932,7 @@ function openSchoolModal() {
   document.getElementById('input-major').value = appData.school.major;
   document.getElementById('input-direction').value = appData.school.direction;
   document.getElementById('input-score').value = appData.school.score;
-  document.getElementById('input-year').value = appData.school.year || 2027;
+  document.getElementById('input-year').value = appData.school.year || 2028;
   document.getElementById('input-subjects').value = appData.school.subjects;
   openModal('school-modal');
 }
@@ -942,7 +942,7 @@ function saveSchool() {
   appData.school.major = document.getElementById('input-major').value;
   appData.school.direction = document.getElementById('input-direction').value;
   appData.school.score = document.getElementById('input-score').value;
-  appData.school.year = parseInt(document.getElementById('input-year').value) || 2027;
+  appData.school.year = parseInt(document.getElementById('input-year').value) || 2028;
   appData.school.subjects = document.getElementById('input-subjects').value;
   
   saveData();
